@@ -20,11 +20,9 @@ char *word_start(char *str)
   int i = 0; /* counter variable */
 
   while(str[i] != '\0'){ /* traverse through str while char is not zero terminator */
-    if(space_char(str[i]) == 1){ /* checking if current char is a space */
-      if(str[i+1] != '\0'){ /* checking if next char is not zero terminator */
-	pstr = &str[i+1]; /* sets pointer variable to the next char */
-	break;
-      }
+    if(non_space_char(str[i])){ /* checking if current char is not a space */
+      pstr = &str[i]; /* sets pointer variable to the next char */
+      break;
     }
     i++; /* incrementing counter variable */
   }
@@ -37,8 +35,8 @@ char *word_terminator(char *word)
   int i = 0; /* counter variable */
 
   while(word[i] != '\0'){ /* traverse through word while char is not zero terminator */
-    if(word[i+1] == '\0'){ /* checking if next char is equal to zero terminator */
-      pword = &word[i+1]; /* sets pointer variable to next char */
+    if(space_char(word[i])){ /* checking if current char is a space */
+      pword = &word[i]; /* sets pointer variable to next char */
       break;
     }
     i++; /* incrementing counter variable */
@@ -62,7 +60,7 @@ int count_words(char *str)
 
 char *copy_str(char *inStr, short len)
 {
-  char *strCopy = (char*)malloc(len+1); /* allocating memory for inStr*/
+  char *strCopy = malloc((len+1) * sizeof(char)); /* allocating memory for inStr*/
   char *tmp = strCopy; /* temporary pointer variable*/
 
   while(*inStr != '\0'){ /* traversing throught the string */
@@ -78,15 +76,17 @@ char *copy_str(char *inStr, short len)
 char **tokenize(char *str)
 {
   int cnt = count_words(str); /* word count variable */
-  char **token = (char**)malloc((cnt+1) * (sizeof(char*))); /* double pointer that is allocated memory */
+  char **token = malloc((cnt+1) * sizeof(char*)); /* double pointer that is allocated memory */
   char *tmp = str; /* temp variable that is set to str */
 
   int i; /* count variable for loop */
   for(i = 0; i < cnt; i++){
     tmp = word_start(tmp); /* sets temp variable to start of word */
-    token[i] = copy_str(tmp,(word_terminator(tmp) - word_start(tmp))); /* copies token into double pointer variable */
+    int len = word_length(tmp);
+    token[i] = copy_str(tmp,len); /* copies token into double pointer variable */
     tmp = word_terminator(tmp); /* adding the zero terminator */
   }
+  token[i] = 0;
   return token; /* returns the tokenized string */
 }
 
@@ -113,4 +113,19 @@ int string_length(char *str)
   int i; /* for loop variable */
   for(i = 0; str[i] != '\0'; i++); /* adds one to i if not zero terminator */
   return i; /* returns i */
+}
+
+int word_length(char *str)
+{
+  int cnt = 0;
+  int i;
+  for(i = 0; str[i] != '\0'; i++){
+    if(non_space_char(str[i])){
+      cnt++;
+    }
+    else{
+      break;
+    }
+  }
+  return cnt;
 }
