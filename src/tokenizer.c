@@ -114,8 +114,3 @@ int string_length(char *str)
   for(i = 0; str[i] != '\0'; i++); /* adds one to i if not zero terminator */
   return i; /* returns i */
 }
-
-int main(int argc, char *argv[])
-{
-  printf("%d\n",string_length("Elizabeth"));
-}
