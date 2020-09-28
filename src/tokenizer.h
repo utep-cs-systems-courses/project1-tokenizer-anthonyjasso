@@ -48,4 +48,7 @@ void free_tokens(char **tokens);
 /* Returns length of string */
 int string_length(char *str);
 
+/* Returns length of word */
+int word_length(char *str);
+
 #endif
